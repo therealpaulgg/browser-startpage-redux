@@ -1,32 +1,70 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+    <div :class="theme">
+        <div id="app">
+            <sidebar />
+            <router-view />
+        </div>
     </div>
-    <router-view />
-  </div>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator"
+import sidebar from "@/components/sidebar.vue"
+@Component({
+    components: {
+        sidebar,
+    },
+})
+export default class App extends Vue {
+    mounted() {
+        setInterval(() => {
+            this.$store.dispatch("updateTime")
+        }, 1000)
+        this.$store.dispatch("updateWeather")
     }
-  }
+
+    get theme() {
+        return this.$store.state.theme
+    }
 }
+</script>
+
+<style lang="sass">
+@import url("https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css")
+html, body
+    font-family: "Hack"
+#app
+    min-height: 100vh
+.container
+    padding-right: 15px
+    padding-left: 15px
+    margin-right: auto
+    margin-left: auto
+.light
+    #app
+        background-color: white
+        color: black
+        transition: 0.5s
+.dark
+    #app
+        background-color: #222222
+        color: white
+        transition: 0.5s
+.dracula
+    #app
+        background-color: #20212b
+        color: white
+        transition: 0.5s
+
+@media (min-width: 768px)
+    .container
+        width: 750px
+
+@media (min-width: 992px)
+    .container
+        width: 970px
+
+@media (min-width: 1200px)
+    .container
+        width: 1170px
 </style>
