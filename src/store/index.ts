@@ -3,7 +3,7 @@ import Vuex from "vuex"
 
 import datetime from "@/services/datetime"
 import weather, { WeatherData } from "@/services/weather"
-import news, { NewsData } from "@/services/news"
+import news, { NewsData, NewsArticle } from "@/services/news"
 import createPersistedState from "vuex-persistedstate"
 
 Vue.use(Vuex)
@@ -18,7 +18,7 @@ interface AppState {
     weather?: WeatherData
     tempSetting: "celsius" | "fahrenheit"
     bothDegrees: boolean
-    news: Map<string, NewsData>
+    news: Map<string, NewsArticle[]>
     // reactivity hack for map
     newsReact: number
     newsSource: "google" | "newsapi"
