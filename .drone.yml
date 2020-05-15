@@ -25,11 +25,17 @@ steps:
       target: ~/apps/redux
       username:
         from_secret: USER
-
-#- name: deploy
-#  image: appleboy/drone-ssh
-#  host: ${HOST}
-#  user: ${USER}
-#  key: ${SSH_KEY}
-#  port: 22
-
+  -
+    name: deploy
+    image: appleboy/drone-ssh
+    settings:
+      settings:
+      host:
+        from_secret: HOST
+      port: 22
+      key:
+        from_secret: SSH_KEY
+      username:
+        from_secret: USER
+      script:
+        bash ~/apps/redux/deploy.sh
