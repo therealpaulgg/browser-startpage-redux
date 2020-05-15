@@ -1,6 +1,6 @@
 <template>
     <div :class="theme">
-        <div id="app">
+        <div id="app" class="jumbotron jumbotron-fluid">
             <sidebar />
             <router-view />
         </div>
@@ -40,21 +40,68 @@ html, body
     padding-left: 15px
     margin-right: auto
     margin-left: auto
+.jumbotron
+    margin: 0
 .light
     #app
         background-color: white
         color: black
         transition: 0.5s
+    a
+        color: black
+        transition: 0.25s
+    a:hover
+        color: #02d4fa
+        transition: 0.25s
+    .btn:hover
+        color: #02d4fa
+    .btn.selected
+        background-color: black
+        color: white
+    .btn:hover
+        color: #02d4fa
+    .jumbotron
+        background-color: white
 .dark
     #app
         background-color: #222222
         color: white
         transition: 0.5s
+    a
+        color: white
+        transition: 0.25s
+    a:hover
+        color: #ff98dd
+        transition: 0.25s
+    .btn:hover
+        color: #ff98dd
+    .btn.selected
+        background-color: #4c5254
+        color: white
+    .btn.selected:hover
+        color: #ff98dd
+    .jumbotron
+        background-color: #222222
 .dracula
     #app
         background-color: #20212b
         color: white
         transition: 0.5s
+    a
+        color: white
+        transition: 0.25s
+    a:hover
+        color: #ff98dd
+        transition: 0.25s
+    .btn:hover
+        color: #ff98dd
+    .btn.selected
+        background-color: #4f5067
+        color: white
+    .btn.selected:hover
+        color: #ff98dd
+    .jumbotron
+        background-color: #20212b
 
 @media (min-width: 768px)
     .container

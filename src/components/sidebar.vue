@@ -38,6 +38,17 @@
                 />
                 <span class="label"></span>{{ item.name }}
             </label>
+            <p>News Source</p>
+            <label v-for="item of newsSources" :key="item.name" class="radio">
+                <input
+                    type="radio"
+                    v-model="newsSource"
+                    name="newsgrp"
+                    :value="item.value"
+                    class="hidden"
+                />
+                <span class="label"></span>{{ item.name }}
+            </label>
         </div>
     </div>
 </template>
@@ -79,6 +90,17 @@ export default class SideBar extends Vue {
         },
     ]
 
+    newsSources = [
+        {
+            name: "Google News",
+            value: "google",
+        },
+        {
+            name: "NewsAPI",
+            value: "newsapi",
+        },
+    ]
+
     get tempSetting() {
         return this.$store.state.tempSetting
     }
@@ -96,6 +118,12 @@ export default class SideBar extends Vue {
     }
     set theme(val: "light" | "dark" | "dracula") {
         this.$store.dispatch("updateTheme", val)
+    }
+    get newsSource() {
+        return this.$store.state.newsSource
+    }
+    set newsSource(val: "newsapi" | "google") {
+        this.$store.dispatch("updateNewsSource", val)
     }
 
     toggleSidebar() {

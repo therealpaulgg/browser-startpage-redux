@@ -3,6 +3,7 @@ import Vuex from "vuex"
 
 import datetime from "@/services/datetime"
 import weather, { WeatherData } from "@/services/weather"
+import news, { NewsData } from "@/services/news"
 import createPersistedState from "vuex-persistedstate"
 
 Vue.use(Vuex)
@@ -17,13 +18,18 @@ interface AppState {
     weather?: WeatherData
     tempSetting: "celsius" | "fahrenheit"
     bothDegrees: boolean
+    news: Map<string, NewsData>
+    // reactivity hack for map
+    newsReact: number
+    newsSource: "google" | "newsapi"
+    selectedCategory: string | null
 }
 
 export default new Vuex.Store({
     plugins: [
         createPersistedState({
             key: "startpage",
-            paths: ["theme", "tempSetting", "bothDegrees"],
+            paths: ["theme", "tempSetting", "bothDegrees", "newsSource"],
         }),
     ],
     state: {
@@ -32,8 +38,30 @@ export default new Vuex.Store({
         date: new Date(),
         tempSetting: "celsius",
         bothDegrees: true,
+        news: new Map(),
+        newsReact: 0,
+        newsSource: "newsapi",
+        selectedCategory: null,
     },
     mutations: {
+        UPDATE_CATEGORY(state: AppState, val: string) {
+            state.selectedCategory = val
+        },
+        FETCH_NEWS(state: AppState, refreshing: boolean) {
+            if (
+                state.selectedCategory !== null &&
+                (state.news.get(state.selectedCategory) === undefined ||
+                    refreshing)
+            ) {
+                news(state.selectedCategory, state.newsSource).then((res) => {
+                    state.news.set(
+                        state.newsSource + state.selectedCategory,
+                        res
+                    )
+                    state.newsReact++
+                })
+            }
+        },
         UPDATE_TIME(state: AppState) {
             state.lastDate = {
                 ...state.date,
@@ -55,6 +83,9 @@ export default new Vuex.Store({
         UPDATE_THEME(state: AppState, val: "light" | "dark" | "dracula") {
             state.theme = val
         },
+        UPDATE_NEWS_SOURCE(state: AppState, val: "newsapi" | "google") {
+            state.newsSource = val
+        },
     },
     actions: {
         updateTime({ commit, state }: { commit: Function; state: AppState }) {
@@ -74,6 +105,23 @@ export default new Vuex.Store({
                 }
             }
         },
+        fetchNews(
+            {
+                state,
+                dispatch,
+                commit,
+            }: { state: AppState; dispatch: Function; commit: Function },
+            refreshing: boolean
+        ) {
+            if (state.selectedCategory === null) {
+                if (state.newsSource === "google") {
+                    dispatch("updateCategory", "top")
+                } else {
+                    dispatch("updateCategory", "general")
+                }
+            }
+            commit("FETCH_NEWS", refreshing)
+        },
         updateWeather({ commit }: { commit: Function }) {
             commit("UPDATE_WEATHER")
         },
@@ -91,6 +139,17 @@ export default new Vuex.Store({
             val: "light" | "dark" | "dracula"
         ) {
             commit("UPDATE_THEME", val)
+        },
+        updateNewsSource(
+            { commit, dispatch }: { commit: Function; dispatch: Function },
+            val: "newsapi" | "google"
+        ) {
+            commit("UPDATE_NEWS_SOURCE", val)
+            commit("UPDATE_CATEGORY", null)
+            dispatch("fetchNews", false)
+        },
+        updateCategory({ commit }: { commit: Function }, val: string) {
+            commit("UPDATE_CATEGORY", val)
         },
     },
     modules: {},
