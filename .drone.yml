@@ -1,0 +1,29 @@
+kind: pipeline
+type: docker
+name: startpageredux
+
+steps:
+- name: deps
+  image: node:alpine
+  volumes:
+  - /var/run/docker.sock:/var/run/docker.sock
+  commands: 
+  - yarn
+- name: build
+  image: node:alpine
+  commands:
+  - yarn build
+- name: copyfiles
+  image: appleboy/drone-scp
+  host: ${HOST}
+  username: ${USER}
+  key: ${SSH_KEY}
+  target: ~/apps/redux
+  source: dist
+#- name: deploy
+#  image: appleboy/drone-ssh
+#  host: ${HOST}
+#  user: ${USER}
+#  key: ${SSH_KEY}
+#  port: 22
+
