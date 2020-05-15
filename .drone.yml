@@ -7,8 +7,6 @@ steps:
       - yarn
     image: "node:alpine"
     name: deps
-    volumes: 
-      - "/var/run/docker.sock:/var/run/docker.sock"
   - 
     commands: 
       - "yarn build"
