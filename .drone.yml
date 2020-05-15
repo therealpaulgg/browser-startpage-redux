@@ -13,13 +13,16 @@ steps:
     image: "node:alpine"
     name: build
   - 
-    host: "${HOST}"
+    host:
+      from_secret: HOST
     image: appleboy/drone-scp
-    key: "${SSH_KEY}"
+    key:
+      from_secret: SSH_KEY
     name: copyfiles
     source: dist
     target: ~/apps/redux
-    username: "${USER}"
+    username:
+      from_secret: USER
 
 #- name: deploy
 #  image: appleboy/drone-ssh
