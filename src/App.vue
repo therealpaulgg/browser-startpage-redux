@@ -31,6 +31,8 @@ export default class App extends Vue {
 
 <style lang="sass">
 @import url("https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css")
+@import url("https://cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css")
+@import url(https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.9/css/weather-icons.min.css)
 html, body
     font-family: "Hack"
 #app

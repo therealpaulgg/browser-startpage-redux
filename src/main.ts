@@ -8,8 +8,6 @@ import { faBars } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import vClickOutside from "v-click-outside"
 
-import "@/assets/css/weather-icons.min.css"
-
 library.add(faBars)
 
 Vue.use(vClickOutside)
