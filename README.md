@@ -1,5 +1,7 @@
 # browser-startpage-redux
 
+A redux of my startpage.
+
 ## Project setup
 ```
 yarn install
