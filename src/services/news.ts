@@ -131,7 +131,7 @@ export default async function(
         }))
     } else {
         const token = "5a585a7efa414edf8b917c52684a89b2"
-        const url = `https://newsapi.org/v2/top-headlines?country=us&category=${filter}`
+        const url = `https://proxy.paulgellai.dev/newsapi?category=${filter}`
         const res = await Axios.get(url, {
             headers: {
                 Authorization: `Bearer ${token}`,
