@@ -25,6 +25,9 @@ steps:
       target: ~/apps/redux
       username:
         from_secret: USER
+      when:
+        branch:
+        - master
   -
     name: deploy
     image: appleboy/drone-ssh
@@ -39,3 +42,6 @@ steps:
         from_secret: USER
       script:
         bash ~/apps/redux/deploy.sh
+      when:
+        branch:
+        - master
