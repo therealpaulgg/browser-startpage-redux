@@ -1,12 +1,10 @@
 import Vue from "vue"
-import Vuex from "vuex"
+import { createStore } from "vuex"
 
 import datetime from "@/services/datetime"
 import weather, { WeatherData } from "@/services/weather"
-import news, { NewsData, NewsArticle } from "@/services/news"
+import news, { NewsArticle } from "@/services/news"
 import createPersistedState from "vuex-persistedstate"
-
-Vue.use(Vuex)
 
 interface AppState {
     dateTime: string
@@ -25,7 +23,7 @@ interface AppState {
     selectedCategory: string | null
 }
 
-export default new Vuex.Store({
+export default createStore({
     plugins: [
         createPersistedState({
             key: "startpage",
@@ -42,7 +40,7 @@ export default new Vuex.Store({
         newsReact: 0,
         newsSource: "newsapi",
         selectedCategory: null,
-    },
+    } as AppState,
     mutations: {
         UPDATE_CATEGORY(state: AppState, val: string) {
             state.selectedCategory = val
@@ -71,7 +69,7 @@ export default new Vuex.Store({
         },
         UPDATE_WEATHER(state: AppState) {
             weather().then((res) => {
-                Vue.set(state, "weather", res)
+                state.weather = res
             })
         },
         UPDATE_TEMP_SETTING(state: AppState, val: "celsius" | "fahrenheit") {

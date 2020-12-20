@@ -50,60 +50,70 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator"
+import { defineComponent, ref } from "vue"
 import Axios from "axios"
 import jsonpAdapter from "axios-jsonp"
 
-@Component
-export default class SearchBar extends Vue {
-    searchInput = ""
-    dataService: string[][] = []
+export default defineComponent({
+    setup() {
+        const searchInput = ref("")
+        const dataService = ref<string[][]>([])
 
-    submit(suggestion: string[]) {
-        // This code basically bypasses the Vue framework and does direct DOM manipulation.
-        // Sorry. Sue me.
-        this.searchInput = suggestion.join("")
-        const bar = this.$refs.searchbarform as HTMLFormElement
-        const input = this.$refs.searchinput as HTMLInputElement
-        input.value = this.searchInput
-        bar.submit()
-        this.autocomplete()
-    }
-
-    autocomplete() {
-        const input = encodeURIComponent(this.searchInput)
-        const uri = `https://suggestqueries.google.com/complete/search?q=${input}&client=chrome&hl=fr`
-        Axios({
-            url: uri,
-            adapter: jsonpAdapter,
-        }).then((res) => {
-            this.dataService = []
-            const items: string[] = [...res.data[1]]
-            items.forEach((item) => {
-                const index = item.indexOf(this.searchInput.toLowerCase())
-                const part: string[] = []
-                if (index != -1) {
-                    const first = item.substring(0, index)
-                    const second = item.substring(
-                        index,
-                        index + this.searchInput.length
-                    )
-                    const third = item.substring(
-                        index + this.searchInput.length,
-                        item.length
-                    )
-                    part.push(first)
-                    part.push(second)
-                    part.push(third)
-                    this.dataService.push(part)
-                } else {
-                    part.push(item)
-                    this.dataService.push(part)
-                }
+        function autocomplete() {
+            const input = encodeURIComponent(searchInput.value)
+            const uri = `https://suggestqueries.google.com/complete/search?q=${input}&client=chrome&hl=fr`
+            Axios({
+                url: uri,
+                adapter: jsonpAdapter,
+            }).then((res) => {
+                dataService.value = []
+                const items: string[] = [...res.data[1]]
+                items.forEach((item) => {
+                    const index = item.indexOf(searchInput.value.toLowerCase())
+                    const part: string[] = []
+                    if (index != -1) {
+                        const first = item.substring(0, index)
+                        const second = item.substring(
+                            index,
+                            index + searchInput.value.length
+                        )
+                        const third = item.substring(
+                            index + searchInput.value.length,
+                            item.length
+                        )
+                        part.push(first)
+                        part.push(second)
+                        part.push(third)
+                        dataService.value.push(part)
+                    } else {
+                        part.push(item)
+                        dataService.value.push(part)
+                    }
+                })
             })
-        })
-    }
-}
+        }
+
+        function submit(suggestion: string[]) {
+            // This code basically bypasses the Vue framework and does direct DOM manipulation.
+            // Sorry. Sue me.
+            searchInput.value = suggestion.join("")
+            const searchbarform = ref<HTMLFormElement | null>(null)
+            const searchinput = ref<HTMLInputElement | null>(null)
+
+            if (searchinput.value) {
+                searchinput.value.value = searchInput.value
+            }
+            if (searchbarform.value) searchbarform.value.submit()
+            autocomplete()
+        }
+        return {
+            searchInput,
+            dataService,
+            autocomplete,
+            submit,
+        }
+    },
+})
 </script>
 
 <style lang="sass">

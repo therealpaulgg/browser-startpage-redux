@@ -8,25 +8,28 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator"
+import { defineComponent, computed, onMounted } from "vue"
+import store from "./store/index"
 import sidebar from "@/components/sidebar.vue"
-@Component({
+export default defineComponent({
     components: {
         sidebar,
     },
-})
-export default class App extends Vue {
-    mounted() {
-        setInterval(() => {
-            this.$store.dispatch("updateTime")
-        }, 1000)
-        this.$store.dispatch("updateWeather")
-    }
+    setup() {
+        const theme = computed(() => store.state.theme)
 
-    get theme() {
-        return this.$store.state.theme
-    }
-}
+        onMounted(() => {
+            setInterval(() => {
+                store.dispatch("updateTime")
+            }, 1000)
+            store.dispatch("updateWeather")
+        })
+
+        return {
+            theme,
+        }
+    },
+})
 </script>
 
 <style lang="sass">

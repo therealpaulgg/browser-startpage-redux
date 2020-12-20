@@ -43,18 +43,25 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator"
+import { defineComponent, PropType } from "vue"
 import { NewsArticle } from "@/services/news"
 import moment from "moment"
 
-@Component
-export default class News extends Vue {
-    @Prop() article?: NewsArticle
-
-    translateDate(datestr: string) {
-        return moment(new Date(datestr)).toLocaleString()
-    }
-}
+export default defineComponent({
+    props: {
+        article: {
+            type: Object as () => PropType<NewsArticle>,
+        },
+    },
+    setup() {
+        function translateDate(datestr: string) {
+            return moment(new Date(datestr)).toLocaleString()
+        }
+        return {
+            translateDate,
+        }
+    },
+})
 </script>
 
 <style lang="sass" scoped>

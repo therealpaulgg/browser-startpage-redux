@@ -25,7 +25,7 @@
             </div>
             <div class="pt-2 pb-2">
                 Both Degrees
-                <toggle-button v-model="bothDegrees" color="#ff98dd" />
+                <toggle-button v-model="bothDegrees" />
             </div>
             <p>Theme</p>
             <label v-for="item of themeSettings" :key="item.name" class="radio">
@@ -54,82 +54,85 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator"
-import { ToggleButton } from "vue-js-toggle-button"
-@Component({
+import { ref, defineComponent, computed } from "vue"
+import store from "../store/index"
+import toggle from "@/components/toggle.vue"
+export default defineComponent({
     components: {
-        ToggleButton,
+        "toggle-button": toggle,
+    },
+    setup() {
+        const isClosed = ref(true)
+        const tempSettings = ref([
+            {
+                name: "Celsius",
+                value: "celsius",
+            },
+            {
+                name: "Fahrenheit",
+                value: "fahrenheit",
+            },
+        ])
+        const themeSettings = ref([
+            {
+                name: "Light Mode",
+                value: "light",
+            },
+            {
+                name: "Dark Mode",
+                value: "dark",
+            },
+            {
+                name: "Dracula Theme",
+                value: "dracula",
+            },
+        ])
+        const newsSources = ref([
+            {
+                name: "Google News",
+                value: "google",
+            },
+            {
+                name: "NewsAPI",
+                value: "newsapi",
+            },
+        ])
+
+        const tempSetting = computed({
+            get: () => store.state.tempSetting,
+            set: (val) => store.dispatch("updateTempSetting", val),
+        })
+        const bothDegrees = computed({
+            get: () => store.state.bothDegrees,
+            set: (val) => store.dispatch("updateBothDegrees", val),
+        })
+
+        const theme = computed({
+            get: () => store.state.theme,
+            set: (val) => store.dispatch("updateTheme", val),
+        })
+
+        const newsSource = computed({
+            get: () => store.state.newsSource,
+            set: (val) => store.dispatch("updateNewsSource", val),
+        })
+
+        function toggleSidebar() {
+            isClosed.value = !isClosed.value
+        }
+        return {
+            isClosed,
+            tempSetting,
+            bothDegrees,
+            theme,
+            newsSource,
+            newsSources,
+            toggleSidebar,
+            tempSettings,
+            themeSettings,
+        }
     },
 })
-export default class SideBar extends Vue {
-    isClosed = true
-
-    tempSettings = [
-        {
-            name: "Celsius",
-            value: "celsius",
-        },
-        {
-            name: "Fahrenheit",
-            value: "fahrenheit",
-        },
-    ]
-
-    themeSettings = [
-        {
-            name: "Light Mode",
-            value: "light",
-        },
-        {
-            name: "Dark Mode",
-            value: "dark",
-        },
-        {
-            name: "Dracula Theme",
-            value: "dracula",
-        },
-    ]
-
-    newsSources = [
-        {
-            name: "Google News",
-            value: "google",
-        },
-        {
-            name: "NewsAPI",
-            value: "newsapi",
-        },
-    ]
-
-    get tempSetting() {
-        return this.$store.state.tempSetting
-    }
-    set tempSetting(val: "celsius" | "fahrenheit") {
-        this.$store.dispatch("updateTempSetting", val)
-    }
-    get bothDegrees() {
-        return this.$store.state.bothDegrees
-    }
-    set bothDegrees(val: boolean) {
-        this.$store.dispatch("updateBothDegrees", val)
-    }
-    get theme() {
-        return this.$store.state.theme
-    }
-    set theme(val: "light" | "dark" | "dracula") {
-        this.$store.dispatch("updateTheme", val)
-    }
-    get newsSource() {
-        return this.$store.state.newsSource
-    }
-    set newsSource(val: "newsapi" | "google") {
-        this.$store.dispatch("updateNewsSource", val)
-    }
-
-    toggleSidebar() {
-        this.isClosed = !this.isClosed
-    }
-}
 </script>
 
 <style lang="sass" scoped>

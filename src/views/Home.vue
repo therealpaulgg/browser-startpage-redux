@@ -21,7 +21,7 @@
                     <button
                         class="btn m-2"
                         :class="{ selected: category === cat.value }"
-                        v-for="(cat, i) in categories"
+                        v-for="(cat, i) in cats"
                         :key="'cat' + i"
                         @click="switchCategory(cat.value)"
                     >
@@ -45,60 +45,61 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator"
+import { defineComponent, computed, onMounted } from "vue"
 import weather from "@/components/weather.vue"
 import searchbar from "@/components/searchbar.vue"
-import news from "@/components/news.vue"
+import newsComponent from "@/components/news.vue"
+import store from "../store/index"
 import { categories } from "@/services/news"
-@Component({
+export default defineComponent({
     components: {
         weather,
         searchbar,
-        news,
+        news: newsComponent,
+    },
+    setup() {
+        const loading = computed(
+            () =>
+                store.state.weather === undefined ||
+                store.state.news === undefined
+        )
+
+        const category = computed<string | null>({
+            get: () => store.state.selectedCategory,
+            set: (val) => store.dispatch("updateCategory", val),
+        })
+
+        const source = computed(() => store.state.newsSource)
+
+        const news = computed(() => {
+            return store.state.news
+                ? store.state.news.get(source.value + category.value)
+                : undefined
+        })
+
+        const cats = computed(() => {
+            if (source.value === "google") {
+                return categories.google
+            } else {
+                return categories.newsapi
+            }
+        })
+
+        onMounted(() => {
+            store.dispatch("fetchNews", false)
+        })
+
+        function switchCategory(cat: string) {
+            category.value = cat
+            store.dispatch("fetchNews", false)
+        }
+        return {
+            loading,
+            category,
+            switchCategory,
+            news,
+            cats,
+        }
     },
 })
-export default class Home extends Vue {
-    get loading() {
-        return (
-            this.$store.state.weather === undefined ||
-            this.$store.state.news === undefined
-        )
-    }
-
-    get category() {
-        return this.$store.state.selectedCategory
-    }
-    set category(val: string) {
-        this.$store.dispatch("updateCategory", val)
-    }
-
-    mounted() {
-        this.$store.dispatch("fetchNews", false)
-    }
-
-    switchCategory(cat: string) {
-        this.category = cat
-        this.$store.dispatch("fetchNews", false)
-    }
-
-    get news() {
-        // reactivity hack required for map
-        this.$store.state.newsReact
-        return this.$store.state.news
-            ? this.$store.state.news.get(this.source + this.category)
-            : undefined
-    }
-
-    get source() {
-        return this.$store.state.newsSource
-    }
-
-    get categories() {
-        if (this.source === "google") {
-            return categories.google
-        } else {
-            return categories.newsapi
-        }
-    }
-}
 </script>
