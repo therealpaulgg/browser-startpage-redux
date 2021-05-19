@@ -25,7 +25,7 @@ steps:
       target: ~/apps/redux
       username:
         from_secret: USER
-      when:
+      trigger:
         branch:
         - master
         event:
@@ -44,7 +44,7 @@ steps:
         from_secret: USER
       script:
         bash ~/apps/redux/deploy.sh
-      when:
+      trigger:
         branch:
         - master
         event:
