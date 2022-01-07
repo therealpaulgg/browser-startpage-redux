@@ -39,6 +39,7 @@
             </template>
             <template v-else>
                 <h1>Loading...</h1>
+                <h2>{{ $store.state.errorMessage }}</h2>
             </template>
         </div>
     </div>

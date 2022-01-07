@@ -21,6 +21,7 @@ interface AppState {
     newsReact: number
     newsSource: "google" | "newsapi"
     selectedCategory: string | null
+    errorMessage: string
 }
 
 export default createStore({
@@ -40,6 +41,7 @@ export default createStore({
         newsReact: 0,
         newsSource: "newsapi",
         selectedCategory: null,
+        errorMessage: "",
     } as AppState,
     mutations: {
         UPDATE_CATEGORY(state: AppState, val: string) {
@@ -68,9 +70,17 @@ export default createStore({
             state.dateTime = datetime()
         },
         UPDATE_WEATHER(state: AppState) {
-            weather().then((res) => {
-                state.weather = res
-            })
+            weather()
+                .then((res) => {
+                    state.weather = res
+                })
+                .catch((err) => {
+                    if (err.response) {
+                        state.errorMessage = err.response.data
+                    } else {
+                        state.errorMessage = err.message
+                    }
+                })
         },
         UPDATE_TEMP_SETTING(state: AppState, val: "celsius" | "fahrenheit") {
             state.tempSetting = val
