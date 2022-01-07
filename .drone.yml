@@ -4,7 +4,7 @@ name: startpageredux
 
 steps:
 - name: build
-  image: "node:alpine"
+  image: "node:lts-alpine"
   commands:
   - yarn
   - yarn build
