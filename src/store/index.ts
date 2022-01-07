@@ -1,4 +1,3 @@
-import Vue from "vue"
 import { createStore } from "vuex"
 
 import datetime from "@/services/datetime"
@@ -19,7 +18,7 @@ interface AppState {
     news: Map<string, NewsArticle[]>
     // reactivity hack for map
     newsReact: number
-    newsSource: "google" | "newsapi"
+    newsSource: "google" | "newsapi" | "newscatcher"
     selectedCategory: string | null
     errorMessage: string
 }
@@ -39,7 +38,7 @@ export default createStore({
         bothDegrees: true,
         news: new Map(),
         newsReact: 0,
-        newsSource: "newsapi",
+        newsSource: "newscatcher",
         selectedCategory: null,
         errorMessage: "",
     } as AppState,
@@ -124,6 +123,8 @@ export default createStore({
             if (state.selectedCategory === null) {
                 if (state.newsSource === "google") {
                     dispatch("updateCategory", "top")
+                } else if (state.newsSource === "newscatcher") {
+                    dispatch("updateCategory", "news")
                 } else {
                     dispatch("updateCategory", "general")
                 }

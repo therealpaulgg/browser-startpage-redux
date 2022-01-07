@@ -61,18 +61,12 @@ async function getCoordsByAPI() {
 export default async function WeatherService(): Promise<WeatherData> {
     let data: { latitude: number; longitude: number }
     if ("geolocation" in navigator) {
-        console.log("Geolocation available")
         try {
             data = await getCoordsByLocation()
-            console.log(data)
         } catch (err) {
-            console.log(
-                "User denied permission or something went wrong, reverting to API method"
-            )
             data = await getCoordsByAPI()
         }
     } else {
-        console.log("Not available, reverting to API method")
         data = await getCoordsByAPI()
     }
     const latitude = data.latitude

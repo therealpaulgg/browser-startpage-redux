@@ -81,6 +81,8 @@ export default defineComponent({
         const cats = computed(() => {
             if (source.value === "google") {
                 return categories.google
+            } else if (source.value === "newscatcher") {
+                return categories.newscatcher
             } else {
                 return categories.newsapi
             }

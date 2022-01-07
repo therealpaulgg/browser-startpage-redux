@@ -89,6 +89,10 @@ export default defineComponent({
         ])
         const newsSources = ref([
             {
+                name: "NewsCatcher",
+                value: "newscatcher",
+            },
+            {
                 name: "Google News",
                 value: "google",
             },
