@@ -45,7 +45,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from "vue"
 import { NewsArticle } from "@/services/news"
-import moment from "moment"
+import dayjs from "dayjs"
 
 export default defineComponent({
     props: {
@@ -55,7 +55,7 @@ export default defineComponent({
     },
     setup() {
         function translateDate(datestr: string) {
-            return moment(new Date(datestr)).toLocaleString()
+            return dayjs(new Date(datestr)).toLocaleString()
         }
         return {
             translateDate,
